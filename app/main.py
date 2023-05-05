@@ -94,7 +94,7 @@ async def detect(websocket: WebSocket, queue: asyncio.Queue):
 
 
 @app.websocket("/face-detection")
-async def face_detection(websocket: WebSocket):
+async def face_detection_websocket(websocket: WebSocket):
     """The face detection websocket
 
     Args:
