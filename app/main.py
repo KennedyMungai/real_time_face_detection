@@ -1,11 +1,11 @@
 """The entrypoint to the application"""
+import asyncio
 from typing import List, Tuple
 
 import cv2
 import numpy as np
-from fastapi import FastAPI, File, UploadFile, WebSocket
+from fastapi import FastAPI, File, UploadFile, WebSocket, WebSocketDisconnect
 from pydantic import BaseModel
-import asyncio
 
 app = FastAPI()
 cascade_classifier = cv2.CascadeClassifier()
@@ -91,3 +91,21 @@ async def detect(websocket: WebSocket, queue: asyncio.Queue):
             faces_output = Faces(faces=[])
 
         await websocket.send_json(faces_output.dict())
+
+
+@app.websocket("/face-detection")
+async def face_detection(websocket: WebSocket):
+    """The face detection websocket
+
+    Args:
+        websocket (WebSocket): The websocket
+    """
+    await websocket.accept()
+    queue: asyncio.Queue = asyncio.Queue(maxsize=10)
+    detect_task = asyncio.create_task(detect(websocket, queue))
+
+    try:
+        while True:
+            await receive(websocket, queue)
+    except WebSocketDisconnect:
+        await websocket.close()
