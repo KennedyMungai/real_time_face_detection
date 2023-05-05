@@ -57,6 +57,12 @@ async def startup():
 
 
 async def receive(websocket: WebSocket, queue: asyncio.Queue):
+    """A function for queuing the data from the websocket
+
+    Args:
+        websocket (WebSocket): The websocket
+        queue (asyncio.Queue): The queue
+    """
     bytes = await websocket.receive_bytes()
 
     try:
