@@ -89,3 +89,5 @@ async def detect(websocket: WebSocket, queue: asyncio.Queue):
             faces_output = Faces(faces=faces.tolist())
         else:
             faces_output = Faces(faces=[])
+
+        await websocket.send_json(faces_output.dict())
