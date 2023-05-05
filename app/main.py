@@ -50,6 +50,6 @@ async def face_detection(image: UploadFile = File(...)) -> Faces:
 
 @app.on_event("startup")
 async def startup():
-    """The startuo event"""
+    """The startup event"""
     cascade_classifier.load(cv2.data.haarcascades +
                             "haarcascade_frontalface_default.xml")
