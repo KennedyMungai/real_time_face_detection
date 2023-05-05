@@ -1,0 +1,4 @@
+real_time_face_detection/
+__pycache__/
+.env
+requirements.txt
