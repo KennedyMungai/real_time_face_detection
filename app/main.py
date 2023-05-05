@@ -1,1 +1,1 @@
-"""The enrypoint to the application"""
+"""The entrypoint to the application"""
