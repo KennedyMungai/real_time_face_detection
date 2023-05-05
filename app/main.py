@@ -3,8 +3,9 @@ from typing import List, Tuple
 
 import cv2
 import numpy as np
-from fastapi import FastAPI, File, UploadFile
+from fastapi import FastAPI, File, UploadFile, WebSocket
 from pydantic import BaseModel
+import asyncio
 
 app = FastAPI()
 cascade_classifier = cv2.CascadeClassifier()
@@ -53,3 +54,12 @@ async def startup():
     """The startup event"""
     cascade_classifier.load(cv2.data.haarcascades +
                             "haarcascade_frontalface_default.xml")
+
+
+async def receive(websocket: WebSocket, queue: asyncio.Queue):
+    bytes = await websocket.receive_bytes()
+
+    try:
+        queue.put_nowait(bytes)
+    except asyncio.QueueFull:
+        pass
