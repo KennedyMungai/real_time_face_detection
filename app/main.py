@@ -69,3 +69,23 @@ async def receive(websocket: WebSocket, queue: asyncio.Queue):
         queue.put_nowait(bytes)
     except asyncio.QueueFull:
         pass
+
+
+async def detect(websocket: WebSocket, queue: asyncio.Queue):
+    """The face detection code from the backend queue
+
+    Args:
+        websocket (WebSocket): The websocket object
+        queue (asyncio.Queue): The image queue
+    """
+    while True:
+        bytes = await queue.get()
+        data = np.frombuffer(bytes, dtype=np.uint8)
+        img = cv2.imdecode(data, 1)
+        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        faces = cascade_classifier.detectMultiScale(gray)
+
+        if len(faces) > 0:
+            faces_output = Faces(faces=faces.tolist())
+        else:
+            faces_output = Faces(faces=[])
